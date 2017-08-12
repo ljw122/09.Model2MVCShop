@@ -7,16 +7,33 @@
 
 <html>
 <head>
-<title>구매 목록조회</title>
+	<title>구매 목록조회</title>
+	
+	<link rel="stylesheet" href="../css/admin.css" type="text/css">
+	
+	<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript">
+		function fncGetList(currentPage){
+			$("#currentPage").val(currentPage);
+			$('form').attr('method','post').attr('action','listPurchase?searchCondition=${user.userId}&searchKeyword=purchaseList').submit();
+		}
+		
+		$(function(){
+			$('.ct_list_pop:nth-child(4n+4)').css('background-color','rgb(220, 245, 245)');
+		});
+		
+		$(function(){
+			$('.ct_list_pop td:nth-child(3) h4').bind('click',function(){
+				self.location = 'getPurchase?tranNo='+$(this).find('input:hidden').val();
+			});
 
-<link rel="stylesheet" href="../css/admin.css" type="text/css">
+			$('.ct_list_pop td:nth-child(11) h4').bind('click',function(){
+				self.location = 'updateTranCode?tranNo='+$(this).find('input:hidden').val()+'&tranCode=3&menu=search&buyer.userId=${user.userId}';
+			});
 
-<script type="text/javascript">
-	function fncGetList(currentPage){
-		document.getElementById("currentPage").value = currentPage;
-		document.detailForm.submit();
-	}
-</script>
+		});
+		
+	</script>
 
 </head>
 
@@ -24,7 +41,7 @@
 
 <div style="width: 98%; margin-left: 10px;">
 
-<form name="detailForm" action="listPurchase?searchCondition=${user.userId}&searchKeyword=purchaseList" method="post">
+<form name="detailForm" >
 
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
@@ -72,7 +89,10 @@
 			<td align="center">${i }</td>
 			<td></td>
 			<td align="left">
-				<a href="getPurchase?tranNo=${purchase.tranNo}">${purchase.purchaseProd.prodName}&nbsp;&nbsp;(수량 : ${purchase.purchaseCount})</a>
+				<h4>
+					<input type="hidden" name="tranNo" value="${purchase.tranNo}">
+					${purchase.purchaseProd.prodName}&nbsp;&nbsp;(수량 : ${purchase.purchaseCount})
+				</h4>
 			</td>
 			<td></td>
 			<td align="left">${purchase.dlvyAddr}</td>
@@ -98,7 +118,10 @@
 			<td></td>
 			<td align="left">
 			<c:if test="${purchase.tranCode=='2' }">
-				<a href="updateTranCode?tranNo=${purchase.tranNo}&tranCode=3&menu=search&buyer.userId=${user.userId}">물건도착</a>
+				<h4>
+					<input type="hidden" name="tranNo" value="${purchase.tranNo}">
+					물건도착
+				</h4>
 			</c:if>
 			</td>
 		</tr>

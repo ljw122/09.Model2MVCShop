@@ -10,10 +10,6 @@
 			$('a').bind('click',function(){
 				window.close();
 			});
-			$('span').bind('click', function(){
-				parent.rightFrame.location.href = 'product/getProduct?prodNo='+$(this).text().trim()+'&menu=search';
-				//window.close();
-			});
 		});
 	</script>
 
@@ -25,7 +21,6 @@
 
 <c:forTokens var="i" items="${cookie.history.value }" delims=",">
 	<a href="product/getProduct?prodNo=${i}&menu=search" target="rightFrame">${i}</a>
-	<span>${i}</span><br/>
 </c:forTokens>
 
 </body>

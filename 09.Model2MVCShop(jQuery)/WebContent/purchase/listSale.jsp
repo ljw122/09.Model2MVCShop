@@ -6,16 +6,40 @@
 
 <html>
 <head>
-<title>판매 목록조회</title>
-
-<link rel="stylesheet" href="../css/admin.css" type="text/css">
-
-<script type="text/javascript">
-	function fncGetList(currentPage){
-		document.getElementById("currentPage").value = currentPage;
-		document.detailForm.submit();
-	}
-</script>
+	<title>판매 목록조회</title>
+	
+	<link rel="stylesheet" href="../css/admin.css" type="text/css">
+	
+	<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript">
+		function fncGetList(currentPage){
+			$('#currentPage').val(currentPage);
+			$('form').attr('method','post').attr('action','listSale?searchKeyword=saleList').submit();
+		}
+		
+		$(function(){
+			$('.ct_list_pop:nth-child(4n+4)').css('background-color','rgb(220, 245, 245)');
+		});
+		
+		$(function(){
+			$('.ct_list_pop td:nth-child(1) h4').bind('click',function(){
+				self.location = 'getPurchase?tranNo='+$(this).find('input:hidden').val();
+			});
+			
+			$('.ct_list_pop td:nth-child(3) h4').bind('click',function(){
+				self.location = '../product/getProduct?prodNo='+$(this).find('input:hidden').val()+'&menu=manage';
+			});
+			
+			$('.ct_list_pop td:nth-child(5) h4').bind('click',function(){
+				self.location = '../user/getUser?userId='+$(this).text().trim();
+			});
+			
+			$('.ct_list_pop td:nth-child(11) h4').bind('click',function(){
+				self.location = 'updateTranCode?tranNo='+$(this).find('input:hidden').val()+'&tranCode=2&menu=manage';
+			});
+		});
+		
+	</script>
 
 </head>
 
@@ -23,7 +47,7 @@
 
 <div style="width: 98%; margin-left: 10px;">
 
-<form name="detailForm" action="listSale?searchKeyword=saleList" method="post">
+<form name="detailForm">
 
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
@@ -68,15 +92,23 @@
 		<c:set var="i" value="${i-1}"/>
 		<tr class="ct_list_pop">
 			<td align="center">
-				<a href="getPurchase?tranNo=${purchase.tranNo}">${i}</a>
+				<h4>
+					<input type="hidden" name="tranNo" value="${purchase.tranNo}">
+					${i}
+				</h4>
 			</td>
 			<td></td>
 			<td align="left">
-				<a href="../product/getProduct?prodNo=${purchase.purchaseProd.prodNo}&menu=manage">${purchase.purchaseProd.prodName} (수량 : ${purchase.purchaseCount })</a>
+				<h4>
+					<input type="hidden" name="prodNo" value="${purchase.purchaseProd.prodNo}">
+					${purchase.purchaseProd.prodName} (수량 : ${purchase.purchaseCount })
+				</h4>
 			</td>
 			<td></td>
 			<td align="left">
-				<a href="../user/getUser?userId=${purchase.buyer.userId}">${purchase.buyer.userId}</a>
+				<h4>
+					${purchase.buyer.userId}
+				</h4>
 			</td>
 			<td></td>
 			<td align="left">
@@ -99,7 +131,10 @@
 			<td></td>
 			<td align="left">
 				<c:if test="${purchase.tranCode=='1'}">
-					<a href="updateTranCode?tranNo=${purchase.tranNo}&tranCode=2&menu=manage">배송하기</a>
+					<h4>
+						<input type="hidden" name="tranNo" value="${purchase.tranNo}">
+						배송하기
+					</h4>
 				</c:if>
 			</td>
 		</tr>

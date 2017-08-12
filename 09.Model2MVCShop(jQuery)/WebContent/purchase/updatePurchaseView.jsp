@@ -7,10 +7,24 @@
 
 <html>
 <head>
-<link rel="stylesheet" href="../css/admin.css" type="text/css">
-
-<title>구매정보 수정</title>
-
+	<link rel="stylesheet" href="../css/admin.css" type="text/css">
+	
+	<title>구매정보 수정</title>
+	<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.ct_btn01:contains("수정")').bind('click',function(){
+				$('form').attr('method','post').attr('action','updatePurchase').submit();
+			});
+			$('.ct_btn01:contains("취소")').bind('click',function(){
+				history.go(-1);
+			});
+			
+			$('.ct_write01 img').bind('click',function(){
+				show_calendar('document.updatePurchase.dlvyDate', document.updatePurchase.dlvtDate.value);
+			});
+		});
+	</script>
 <script type="text/javascript" src="../javascript/calendar.js">
 </script>
 
@@ -18,7 +32,7 @@
 
 <body bgcolor="#ffffff" text="#000000">
 
-<form name="updatePurchase" method="post"	action="updatePurchase?tranNo=${purchase.tranNo }">
+<form name="updatePurchase">
 
 <table width="100%" height="37" border="0" cellpadding="0" cellspacing="0">
 	<tr>
@@ -40,6 +54,7 @@
 </table>
 
 <input type="hidden" name="buyer.userId" value="${purchase.buyer.userId}"/>
+<input type="hidden" name="tranNo" value="${purchase.tranNo}"/>
 
 <table width="600" border="0" cellspacing="0" cellpadding="0"	align="center" style="margin-top: 13px;">
 	<tr>
@@ -59,8 +74,8 @@
 		<td class="ct_write01">
 			<select 	name="paymentOption" 	class="ct_input_g" style="width: 100px; height: 19px" 
 							maxLength="20">
-				<option value="1" ${purchase.paymentOption=='1'? "selected":""}>현금구매</option>
-				<option value="2" ${purchase.paymentOption=='2'? "selected":""}>신용구매</option>
+				<option value="1" ${purchase.paymentOption=='1  '? "selected":""}>현금구매</option>
+				<option value="2" ${purchase.paymentOption=='2  '? "selected":""}>신용구매</option>
 			</select>
 		</td>
 	</tr>
@@ -133,8 +148,7 @@
 		<td width="200" class="ct_write01">
 			<input type="text" readonly="readonly" name="dlvyDate" class="ct_input_g" 
 						style="width: 100px; height: 19px" maxLength="20" value="${purchase.dlvyDate}"/>
-				<img 	src="../images/ct_icon_date.gif" width="15" height="15"	
-							onclick="show_calendar('document.updatePurchase.dlvyDate', document.updatePurchase.dlvyDate.value)"/>
+				<img 	src="../images/ct_icon_date.gif" width="15" height="15"	/>
 		</td>
 	</tr>
 	<tr>
@@ -152,7 +166,7 @@
 					<img src="../images/ct_btnbg01.gif" width="17" height="23"/>
 				</td>
 				<td background="../images/ct_btnbg02.gif" class="ct_btn01"	style="padding-top: 3px;">
-					<input type="submit" value="수정"/>
+					수정
 				</td>
 				<td width="14" height="23">
 					<img src="../images/ct_btnbg03.gif" width="14" height="23"/>
@@ -162,7 +176,7 @@
 					<img src="../images/ct_btnbg01.gif" width="17" height="23"/>
 				</td>
 				<td background="../images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-					<a href="javascript:history.go(-1)">취소</a>
+					취소
 				</td>
 				<td width="14" height="23">
 					<img src="../images/ct_btnbg03.gif" width="14" height="23"/>
