@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
-<form name="commentProduct" method="post" action="addProductComment.do">
+<form name="commentProduct">
 <input type="hidden" name="prodNo" value="${product.prodNo}"/>
 <input type="hidden" name="userId" value="${user.userId }"/>
 <hr/>
@@ -23,11 +23,17 @@
 		<td class="ct_write">
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 				<tr>
-					<td width="80%">
-						<input type="text" name="cmt" id="cmd" width="100%" />
+					<td width="90%">
+						<input type="text" name="cmt" width="100%" />
 					</td>
-					<td width="20%">
-						<input type="submit" value="등록"/>
+					<td width="17" height="23">
+						<img src="../images/ct_btnbg01.gif" width="17" height="23"/>
+					</td>
+					<td background="../images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
+						등록
+					</td>
+					<td width="14" height="23">
+						<img src="../images/ct_btnbg03.gif" width="14" height="23">
 					</td>
 				</tr>
 			</table>
@@ -38,7 +44,6 @@
 	</tr>
 	</c:if>
 	
-	${replyList.size() }
 	<c:if test="${replyList.size()>0 }">
 		<c:forEach var="reply" items="${ replyList }">
 		<tr>
@@ -55,7 +60,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td height="1" colspan="3" bgcolor="D6D6D6"></td>
+			<td height="1" colspan="5" bgcolor="D6D6D6"></td>
 		</tr>	
 		</c:forEach>
 	</c:if>

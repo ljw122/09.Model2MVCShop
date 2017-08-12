@@ -10,20 +10,111 @@
 
 <html>
 <head>
-<title>상품 목록조회</title>
+	<title>상품 목록조회</title>
+	
+	<link rel="stylesheet" href="../css/admin.css" type="text/css">
+	
+	<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript">
+		function fncGetList(currentPage){
+			$('#currentPage').val(currentPage);
+			$('form').attr('method','post').attr('action','listProduct?menu=${menu}').submit();
+		}
+		function fncOrderList(orderCondition, orderOption){
+			$('#orderCondition').val(orderCondition);
+			$('#orderOption').val(orderOption);
+			fncGetList(1);
+		}
+		
+		$(function(){
+			
+			var orderOption = $('input:hidden[name="orderOption"]').val();
+			var orderCondition = $('input:hidden[name="orderCondition"]').val();
+			
+			$('.ct_list_pop:nth-child(4n+4)').css('background-color','rgb(220, 245, 245)');
+			
+			$('select[name="searchCondition"]').bind('change',function(){
+				
+				$('input:text').val('');
 
-<link rel="stylesheet" href="../css/admin.css" type="text/css">
-<script type="text/javascript">
-	function fncGetList(currentPage){
-		document.getElementById("currentPage").value = currentPage;
-		document.detailForm.submit();
-	}
-	function fncOrderList(orderCondition, orderOption){
-		document.getElementById("orderCondition").value=orderCondition;
-		document.getElementById("orderOption").value=orderOption;
-		fncGetList('1');
-	}
-</script>
+				if($(this).val()==2){
+
+					$('span').replaceWith(
+						'<span>'
+							+'<input type="text" name="searchKeyword" value="${search.searchKeyword}"'
+								+'class="ct_input_g" style="width:65px; height:19px" />&nbsp;이상 &nbsp;'
+							+'<input type="text" name="searchKeyword2" value="${search.searchKeyword2}"'
+								+'class="ct_input_g" style="width:65px; height:19px" />&nbsp;이하'
+						+'</span>'
+					);
+				}else{
+					$('span').replaceWith(
+						'<span>'
+							+'<input type="text" name="searchKeyword" value="${search.searchKeyword}"'
+								+'class="ct_input_g" style="width:200px; height:19px" />'
+						+'</span>'
+					);
+
+				}
+					
+			});
+			
+			$('.ct_list_b:contains("상품명")').bind('click',function(){
+				if(orderCondition == 1 && orderOption == 'ASC'){
+					fncOrderList(1, 'DESC');
+				}else{
+					fncOrderList(1, 'ASC');
+				}
+			});
+			
+			$('.ct_list_b:contains("가격")').bind('click',function(){
+				if(orderCondition == 2 && orderOption == 'ASC'){
+					fncOrderList(2, 'DESC');
+				}else{
+					fncOrderList(2, 'ASC');
+				}
+			});
+			
+			$('input:checkbox[name="stockView"]').bind('change',function(){
+				fncGetList(1);
+			});
+		});
+		
+		$(function(){
+			$('input:text').bind('keydown',function(event){
+				if(event.keyCode == '13'){
+					event.preventDefault();
+					if($('select[name="searchCondition"]').val()==2){
+						if(!$.isNumeric($('input:text[name="searchKeyword"]').val()) || !$.isNumeric($('input:text[name="searchKeyword"]').val())){
+							alert('가격 검색은 숫자로만 가능합니다!');
+							$('input:text').val('');
+							return;
+						}
+					}
+					fncGetList(1);
+				}
+			});
+			
+			$('.ct_btn01:contains("검색")').bind('click',function(){
+				if($('select[name="searchCondition"]').val()==2){
+					if( ($('input:text[name="searchKeyword"]') != null && !$.isNumeric($('input:text[name="searchKeyword"]').val()) )
+							|| ( $('input:text[name="searchKeyword2"]') != null && !$.isNumeric($('input:text[name="searchKeyword2"]').val()) ) ){
+						alert('가격 검색은 숫자로만 가능합니다!');
+						$('input:text').val('');
+						return;
+					}
+				}
+				fncGetList(1);
+			});
+		});
+		
+		$(function(){
+			$('h4').bind('click',function(){
+				self.location = 'getProduct?menu=${menu}&prodNo='+$('input:hidden[name="'+$(this).text().trim()+'"]').val();
+			});
+		});
+		
+	</script>
 
 </head>
 
@@ -31,7 +122,7 @@
 
 <div style="width:98%; margin-left:10px;">
 
-<form name="detailForm" action="listProduct?menu=${menu }" method="post">
+<form name="detailForm">
 
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
@@ -42,7 +133,7 @@
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td width="93%" class="ct_ttl01">
-						${menu=='manage' ? "상품관리" : "상품 목록조회" }
+						상품 ${menu=='manage' ? "관리" : "목록조회" }
 					</td>
 				</tr>
 			</table>
@@ -58,27 +149,27 @@
 	<tr>		
 		<td align="left">
 			<c:if test="${menu=='search' }">
-				<input type="checkbox" name="stockView" onchange="javascript:fncGetList('1')" ${search.stockView ? "checked=\"checked\"" : "" }
+				<input type="checkbox" name="stockView" ${search.stockView ? "checked=\"checked\"" : "" }
 						class="ct_input_g" height="19"/>완판 상품 보기
 			</c:if>
 		</td>
 		<td align="right">
-			<select name="searchCondition" class="ct_input_g" style="width:80px" onchange="javascript:fncGetList('${resultPage.currentPage }')">
+			<select name="searchCondition" class="ct_input_g" style="width:80px">
 				<option value="1" ${!empty search.searchCondition && search.searchCondition==1 ? "selected" : ""} >상품명</option>
 				<option value="2" ${!empty search.searchCondition && search.searchCondition==2 ? "selected" : ""} >상품가격</option>
 			</select>
-			<c:choose>
-				<c:when test="${search.searchCondition==2 }">
-					<input type="text" name="searchKeyword" value="${!empty search.searchKeyword? search.searchKeyword : '' }"
-							class="ct_input_g" style="width:65px; height:19px" />&nbsp;이상&nbsp;
-					<input type="text" name="searchKeyword2" value="${!empty search.searchKeyword2? search.searchKeyword2 : '' }"
-							class="ct_input_g" style="width:65px; height:19px" />&nbsp;이하
-				</c:when>
-				<c:otherwise>
-					<input type="text" name="searchKeyword" value="${!empty search.searchKeyword? search.searchKeyword : '' }"
-							class="ct_input_g" style="width:200px; height:19px" />
-				</c:otherwise>
-			</c:choose>
+			<span>
+				<c:if test="${search.searchCondition == '1'}">
+					<input type="text" name="searchKeyword" value="${search.searchKeyword}"
+						class="ct_input_g" style="width:200px; height:19px" />
+				</c:if>
+				<c:if test="${search.searchCondition == '2'}">
+					<input type="text" name="searchKeyword" value="${search.searchKeyword}"
+						class="ct_input_g" style="width:65px; height:19px" />&nbsp;이상&nbsp;
+					<input type="text" name="searchKeyword2" value="${search.searchKeyword2}"
+						class="ct_input_g" style="width:65px; height:19px" />&nbsp;이하
+				</c:if>					
+			</span>
 		</td>
 		<td align="right" width="70">
 			<table border="0" cellspacing="0" cellpadding="0">
@@ -87,7 +178,7 @@
 						<img src="../images/ct_btnbg01.gif" width="17" height="23">
 					</td>
 					<td background="../images/ct_btnbg02.gif" class="ct_btn01" style="padding-top:3px;">
-						<a href="javascript:fncGetList('1');">검색</a>
+						검색
 					</td>
 					<td width="14" height="23">
 						<img src="../images/ct_btnbg03.gif" width="14" height="23">
@@ -110,16 +201,12 @@
 			<input type="hidden" id="orderOption" name="orderOption" value="${!empty search.orderOption? search.orderOption : '' }"/>
 		</td>
 		<td class="ct_list_b" width="150">상품명&nbsp;
-			<a href="javascript:fncOrderList('1', '${search.orderCondition=='1' && search.orderOption=='ASC' ? 'DESC' : 'ASC' }')">
-				${!empty search.orderCondition && search.orderCondition=='1' ? (search.orderOption=='ASC'? "▲":"▼") : "-" }
-			</a>
-		</td>
+			${!empty search.orderCondition && search.orderCondition=='1' ? (search.orderOption=='ASC'? "▲":"▼") : "-" }
+ 		</td>
 		<td class="ct_line02"></td>
 		<td class="ct_list_b" width="100">가격&nbsp;
-			<a href="javascript:fncOrderList('2','${search.orderCondition=='2' && search.orderOption=='ASC' ? 'DESC' : 'ASC' }')">
-				${!empty search.orderCondition && search.orderCondition=='2' ? (search.orderOption=='ASC'? "▲":"▼") : "-" }
-			</a>
-		</td>
+			${!empty search.orderCondition && search.orderCondition=='2' ? (search.orderOption=='ASC'? "▲":"▼") : "-" }
+ 		</td>
 		<td class="ct_line02"></td>
 		<td class="ct_list_b">${menu=='manage' ? "등록일":"제품 상세 정보"}</td>
 		<td class="ct_line02"></td>
@@ -135,13 +222,18 @@
 	<c:forEach var="product" items="${list}">
 		<c:set var="i" value="${i-1}"/>
 		<tr class="ct_list_pop">
-			<td align="center">${i }</td>
+			<td align="center">
+				${i }
+			</td>
 			<td></td>
 					
 			<td align="left">
 				<c:choose>
 					<c:when test="${empty product.proTranCode || menu=='manage' }">
-						<a href="getProduct?menu=${menu}&prodNo=${product.prodNo }">${product.prodName}</a>
+						<h4>
+							<input type="hidden" name="${product.prodName}" value="${product.prodNo}">
+							${product.prodName}
+						</h4>
 					</c:when>
 					<c:otherwise>
 						${product.prodName }

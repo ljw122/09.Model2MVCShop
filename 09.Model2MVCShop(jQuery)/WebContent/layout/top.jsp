@@ -1,13 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ page contentType="text/html; charset=euc-kr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 
 <html>
 <head>
-<title>Model2 MVC Shop</title>
-
-<link href="../css/left.css" rel="stylesheet" type="text/css">
-
+	<title>Model2 MVC Shop</title>
+	
+	<link href="../css/left.css" rel="stylesheet" type="text/css">
+	<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript">
+	
+		$(function(){
+			
+			$('td[width="115"]:contains("login")').bind('click', function(){
+				$(window.parent.frames['rightFrame'].document.location).attr("href","../user/login");
+			});
+	
+			$('td[width="56"]:contains("logout")').bind('click', function(){
+				$(window.parent.document.location).attr("href","../user/logout");
+			});
+			
+		});
+	</script>
+	
 </head>
 
 <body topmargin="0" leftmargin="0">
@@ -23,13 +39,13 @@
 	        <tr> 
 	          <td width="115">
 				<c:if test="${empty user }">
-	              <a href="../user/login" target="rightFrame">login</a>   
+	              login   
 				</c:if>
 	          </td>
 	          <td width="14">&nbsp;</td>
 	          <td width="56">
 	          	<c:if test="${!empty user }">
-	              <a href="../user/logout" target="_parent">logout</a>  
+	              logout 
 	          	</c:if>
 	          </td>
 	        </tr>

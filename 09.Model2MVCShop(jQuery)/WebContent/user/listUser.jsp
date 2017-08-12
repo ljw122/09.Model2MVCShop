@@ -7,16 +7,32 @@
 
 <html>
 <head>
-<title>회원 목록조회</title>
+	<title>회원 목록조회</title>
+	
+	<link rel="stylesheet" href="../css/admin.css" type="text/css">
 
-<link rel="stylesheet" href="../css/admin.css" type="text/css">
-
-<script type="text/javascript">
-	function fncGetList(currentPage){
-		document.getElementById("currentPage").value = currentPage;
-		document.detailForm.submit();
-	}
-</script>
+	<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript">
+		function fncGetList(currentPage){
+			$('#currentPage').val(currentPage);
+			$('form').attr('method','post').attr('action','listUser').submit();
+		}
+		
+		$(function(){
+			$('td.ct_btn01:contains("검색")').bind('click',function(){
+				fncGetUserList(1);
+			});
+			
+			$('span').bind('click', function(){
+				self.location = 'getUser?userId='+$(this).text().trim();
+			});
+			
+			$('span').css('color','red');
+			$('h6').css('color','red');
+			
+			$('.ct_list_pop:nth-child(4n+6)').css('background-color','rgb(220, 245, 245)');
+		});
+	</script>
 
 </head>
 
@@ -24,7 +40,7 @@
 
 <div style="width:98%; margin-left:10px;">
 
-<form name="detailForm" action="listUser" method="post">
+<form name="detailForm" >
 
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
@@ -61,7 +77,7 @@
 						<img src="../images/ct_btnbg01.gif" width="17" height="23">
 					</td>
 					<td background="../images/ct_btnbg02.gif" class="ct_btn01" style="padding-top:3px;">
-						<a href="javascript:fncGetList('1');">검색</a>
+						검색
 					</td>
 					<td width="14" height="23">
 						<img src="../images/ct_btnbg03.gif" width="14" height="23">
@@ -79,7 +95,9 @@
 	<tr>
 		<td class="ct_list_b" width="100">No</td>
 		<td class="ct_line02"></td>
-		<td class="ct_list_b" width="150">회원ID</td>
+		<td class="ct_list_b" width="150">
+			회원ID <h6 >(id click:상세정보)</h6>
+		</td>
 		<td class="ct_line02"></td>
 		<td class="ct_list_b" width="150">회원명</td>
 		<td class="ct_line02"></td>
@@ -96,7 +114,7 @@
 			<td align="center">${i}</td>
 			<td></td>
 			<td align="left">
-				<a href="getUser?userId=${user.userId}">${user.userId}</a>
+				<span>${user.userId}</span>
 			</td>
 			<td></td>
 			<td align="left">${user.userName}</td>

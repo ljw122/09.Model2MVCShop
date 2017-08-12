@@ -3,7 +3,19 @@
 <html>
 <head>
 
-<title>열어본 상품 보기</title>
+	<title>열어본 상품 보기</title>
+	<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('a').bind('click',function(){
+				window.close();
+			});
+			$('span').bind('click', function(){
+				parent.rightFrame.location.href = 'product/getProduct?prodNo='+$(this).text().trim()+'&menu=search';
+				//window.close();
+			});
+		});
+	</script>
 
 </head>
 <body>
@@ -12,7 +24,8 @@
 <br>
 
 <c:forTokens var="i" items="${cookie.history.value }" delims=",">
-	<a href="product/getProduct?prodNo=${i}&menu=search" target="rightFrame">${i}</a><br/>
+	<a href="product/getProduct?prodNo=${i}&menu=search" target="rightFrame">${i}</a>
+	<span>${i}</span><br/>
 </c:forTokens>
 
 </body>

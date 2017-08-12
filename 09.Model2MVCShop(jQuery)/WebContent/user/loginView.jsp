@@ -3,42 +3,70 @@
 <%-- user에서 실행 --%>
 <html>
 <head>
-<title>로그인</title>
-
-<link rel="stylesheet" href="../css/admin.css" type="text/css">
-
-<script type="text/javascript">
-<!--
-	function fncLogin() {
-		var id=document.loginForm.userId.value;
-		var pw=document.loginForm.password.value;
-		if(id == null || id.length <1) {
-			alert('ID 를 입력하지 않으셨습니다.');
-			document.loginForm.userId.focus();
-			return;
-		}
-		
-		if(pw == null || pw.length <1) {
-			alert('패스워드를 입력하지 않으셨습니다.');
-			document.loginForm.password.focus();
-			return;
-		}
-	    document.loginForm.submit();
-	}
+	<title>로그인</title>
 	
-	window.onload = function(){
-		document.getElementById("userId").focus();
-	}
--->
-</script>
-<script type="text/javascript">
-	document.loginForm.userId.focus();
-</script>
+	<link rel="stylesheet" href="../css/admin.css" type="text/css">
+	
+	<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript">
+		
+		function loginCheck(){
+			var id=$('input:text').val();
+			var pw=$('input:password').val();
+			
+			if(id == null || id.length < 1){
+				alert('아이디를 입력하지 않았습니다.');
+				$('input:text').focus();
+				return;
+			}
+			
+			if(pw == null || pw.length < 1){
+				alert('비밀번호를 입력하지 않았습니다.');
+				$('input:password').focus();
+				return;
+			}
+			
+			$('form').attr('method','post').attr('action','login').attr('target','_parent').submit();
+			
+		}
+	
+		$(function(){
+			$('input:text').focus();
+			
+			$('input').bind('keydown', function(event){
+				if(event.which == '13'){
+					loginCheck();
+				}
+			});
+			
+			$('img[src="../images/btn_login.gif"]').bind('click', function(){
+				loginCheck();
+			});
+			
+			$('input:password').bind('keydown', function(event){
+				if(event.which == '9'){
+					event.preventDefault();
+					$('input:text').focus();
+				}
+			});
+			
+		});
+		
+		$(function(){
+			$('img[src="../images/btn_add.gif"]').bind('click', function(){
+				self.location = 'addUser';
+			});
+		});
+	
+	</script>
+	<script type="text/javascript">
+		document.loginForm.userId.focus();
+	</script>
 </head>
 
 <body bgcolor="#ffffff" text="#000000" >
 
-<form name="loginForm"  method="post" action="login" target="_parent">
+<form>
 
 <div align="center">
 
@@ -103,15 +131,11 @@
       				<table width="136" height="20" border="0" cellpadding="0" cellspacing="0">
                           <tr> 
                             <td width="56">
-                            	<a href="javascript:fncLogin();">
-                            		<img src="../images/btn_login.gif" width="56" height="20" border="0">
-                            	</a>
-                            </td>
+                           		<img src="../images/btn_login.gif" width="56" height="20" border="0">
+	                        </td>
                             <td width="10">&nbsp;</td>
                             <td width="70">
-                            	<a href="addUser">
-                            		<img src="../images/btn_add.gif" width="70" height="20" border="0">
-                            	</a>
+                           		<img src="../images/btn_add.gif" width="70" height="20" border="0">
                             </td>
                           </tr>
                     </table>

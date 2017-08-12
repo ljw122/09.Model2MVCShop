@@ -48,10 +48,6 @@ public class ProductController {
 	@Qualifier("uploadFilePath")
 	private FileSystemResource fsr;
 	
-	String temDir =
-			"C:\\Users\\ljw12\\git\\07.Model2MVCShop\\07.Model2MVCShop(URI,pattern)\\WebContent\\images\\uploadFiles";
-			//request.getServletContext().getRealPath("images\\uploadFiles");
-
 	
 	/*Constructor*/
 	public ProductController(){
@@ -68,71 +64,6 @@ public class ProductController {
 	public ModelAndView addProduct( @ModelAttribute("product") Product product,
 									@RequestParam("file") MultipartFile file		) throws Exception{
 		
-		ModelAndView modelAndView = new ModelAndView("forward:addProduct.jsp");
-
-
-//////////FileUpload 추가////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		if(FileUpload.isMultipartContent(request)){
-//			String temDir = 
-//					"C:\\Users\\ljw12\\git\\07.Model2MVCShop\\07.Model2MVCShop(URI,pattern)\\WebContent\\images\\uploadFiles";
-//			
-//			DiskFileUpload fileUpload = new DiskFileUpload();
-//			fileUpload.setRepositoryPath(temDir);
-//			fileUpload.setSizeMax(1024*1024*1);
-//			fileUpload.setSizeThreshold(1024*100);
-//			
-//			if(request.getContentLength() < fileUpload.getSizeMax()){
-//				Product product = new Product();
-//				StringTokenizer token = null;
-//				
-//				List<FileItem> fileItemList = fileUpload.parseRequest(request);
-//				for(FileItem fileItem : fileItemList){
-//					if(fileItem.isFormField()){
-//						if(fileItem.getFieldName().equals("manuDate")){
-//							product.setManuDate(fileItem.getString("euc-kr"));
-//						} else if(fileItem.getFieldName().equals("prodName")){
-//							product.setProdName(fileItem.getString("euc-kr"));
-//						} else if(fileItem.getFieldName().equals("prodDetail")){
-//							product.setProdDetail(fileItem.getString("euc-kr"));
-//						} else if(fileItem.getFieldName().equals("price")){
-//							product.setPrice(Integer.parseInt(fileItem.getString("euc-kr")));
-//						} else if(fileItem.getFieldName().equals("stock")){
-//							product.setStock(Integer.parseInt(fileItem.getString("euc-kr")));
-//						}
-//					}else{
-//						if(fileItem.getSize()>0){
-//							int idx = fileItem.getName().lastIndexOf("\\");
-//							if(idx == -1){
-//								idx = fileItem.getName().lastIndexOf("/");
-//							}
-//							String fileName = fileItem.getName().substring(idx+1);
-//							product.setFileName(fileName);
-//							try{
-//								File uploadedFile = new File(temDir, fileName);
-//								fileItem.write(uploadedFile);
-//							}catch(IOException e){
-//								System.out.println(e);
-//							}
-//						}else{
-//							product.setFileName("empty"+(int)(Math.random()*3)+".GIF");
-//						}
-//					}
-//				}
-//				productService.addProduct(product);
-//				modelAndView.addObject("product", product);
-//			} else{
-//				int overSize = (request.getContentLength()/1000000);
-//				System.out.println("<script>alert('파일의 크기는 1MB까지 입니다. 올리신 파일 용량은 "+overSize + "MB 입니다.');");
-//				System.out.println("history.back();</script>");
-//			}
-//		}else{
-//			System.out.println("인코딩 타입이 multipart/form-data가 아닙니다..");
-//		}
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//Spring MultipartFile 이용
-//		
-//		MultipartFile file = ((MultipartHttpServletRequest)request).getFile("file");
-//		
 		product.setFileName("");
 		if(!file.isEmpty()){
 			FileOutputStream fos = new FileOutputStream(new File(fsr.getPath(), file.getOriginalFilename()));
@@ -144,7 +75,7 @@ public class ProductController {
 		
 		productService.addProduct(product);
 		
-		return modelAndView;
+		return new ModelAndView("forward:addProduct.jsp");
 	}
 	
 	@RequestMapping( value="getProduct", method=RequestMethod.GET )
@@ -216,25 +147,15 @@ public class ProductController {
 		if(search.getCurrentPage()==0){
 			search.setCurrentPage(1);
 		}
+		if(search.getSearchCondition() == null){
+			search.setSearchCondition("1");
+		}
 		if(menu.equals("manage")){
 			search.setStockView(true);
 		}
 		search.setPageSize(pageSize);
 		search.setPageUnit(pageUnit);
-		
-		if(search.getSearchCondition() != null && search.getSearchCondition().equals("2")){
-			try{
-				Integer.parseInt(search.getSearchKeyword());
-			}catch(NumberFormatException e){
-				search.setSearchKeyword("");
-			}
-			try{
-				Integer.parseInt(search.getSearchKeyword2());
-			}catch(NumberFormatException e){
-				search.setSearchKeyword2("");
-			}
-		}
-		
+				
 		Map<String, Object> map = productService.getProductList(search);
 		
 		Page resultPage = new Page(search.getCurrentPage(), ((Integer)map.get("totalCount")).intValue(), pageUnit, pageSize);

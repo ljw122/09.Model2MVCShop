@@ -39,7 +39,7 @@
 		                "<html>\n"+ 
 		                "<head>\n"+ 
 		                "<title>Calendar</title>\n"+ 
-		                "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"+
+		                "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=euc-kr\">\n"+
 		                "<style>\n"+
 	                    "td {font-size: 11px; color: #222222; text-decoration: none; font-family:verdana, 바탕; line-height:15px}\n"+
 	                    "A:link    {font-size: 11px; color: #222222; text-decoration: none; font-family:verdana, 바탕}\n"+

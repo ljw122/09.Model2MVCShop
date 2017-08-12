@@ -5,44 +5,58 @@
 
 <html>
 <head>
-<title>아이디 중복 확인</title>
-
-<link rel="stylesheet" href="../css/admin.css" type="text/css">
-
-<script type="text/javascript">
-<!--
-window.onload = function(){
-	document.getElementById("userId").focus();
-	document.getElementById("userId").onkeydown = function(){
-		if(event.keyCode == '13') fncCheckDuplication();
-	}
-}
-
-function fncCheckDuplication() {
-	// Form 유효성 검증
-	if(document.detailForm.userId.value != null && document.detailForm.userId.value.length >0) {
+	<title>아이디 중복 확인</title>
+	
+	<link rel="stylesheet" href="../css/admin.css" type="text/css">
+	
+	<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript">
 		
-	    document.detailForm.action='checkDuplication';
-	    document.detailForm.submit();
-	}else {
-		alert('아이디는 반드시 입력하셔야 합니다.');
-	}
-	document.getElementById("userId").focus(); 
-}
+		$(function(){
+			$('#userId').focus();
+			
+			$('form').bind('keydown',function(event){
+				if(event.keyCode == '13'){
+				}
+			});
+			
+		});
+		
+		$(function(){
+			$('td.ct_btn:contains("중복확인")').bind('click', function(){
+				if($('#userId').val() != null && $('#userId').val().length >0) {
+					$('form').attr('method','post').attr('action','checkDuplication').submit();
+				}else {
+					alert('아이디는 반드시 입력하셔야 합니다.');
+				}
+				$("#userId").focus(); 
+			});
+		});
+		
+		$(function(){
+			$('td.ct_btn01:contains("사용")').bind('click', function(){
+				if(opener){
+					opener.$('input[name="userId"]').val('${userId}');
+					opener.$('input[name="password"]').focus();
+				}
+				
+				window.close();
+			});
+			
+		});
+		
+		$(function(){
+			$('td.ct_btn01:contains("닫기")').bind('click',function(){
+				window.close();
+			});
 
-function fncUseId() {
-	if(opener) {
-		opener.document.detailForm.userId.value = "${userId}";
-	}
-	window.close();
-}
--->
-</script>
+		});
+	</script>
 </head>
 
 <body bgcolor="#ffffff" text="#000000">
 
-<form name="detailForm"  method="post">
+<form name="detailForm">
 
 <input type="hidden" name="name" value=""/>
 
@@ -78,7 +92,7 @@ function fncUseId() {
 					</td>
 					<td class="ct_ttl02">
 						<c:if test="${!empty result }">
-							${userId } ${result? "는 사용 가능합니다.":"는 사용이 불가능합니다." }
+							${userId }는 사용 ${result? "":"불" }가능합니다.
 						</c:if>
 					</td>
 				</tr>
@@ -116,7 +130,7 @@ function fncUseId() {
 								</td>
 								<td 	align="center" background="../images/ct_btng02.gif" class="ct_btn" 
 										style="padding-top:3px;">
-									<a href="javascript:fncCheckDuplication();">중복확인</a>
+									중복확인
 								</td>
 								<td width="4" height="21">
 									<img src="../images/ct_btng03.gif" width="4" height="21">
@@ -146,7 +160,7 @@ function fncUseId() {
 						<img src="../images/ct_btnbg01.gif" width="17" height="23"/>
 					</td>
 					<td background="../images/ct_btnbg02.gif" class="ct_btn01" style="padding-top:3px;">
-						<a href="javascript:fncUseId();">사용</a>
+						사용
 					</td>
 					<td width="14" height="23">
 						<img src="../images/ct_btnbg03.gif" width="14" height="23"/>
@@ -157,7 +171,7 @@ function fncUseId() {
 						<img src="../images/ct_btnbg01.gif" width="17" height="23"/>
 					</td>
 					<td background="../images/ct_btnbg02.gif" class="ct_btn01" style="padding-top:3px;">
-						<a href="javascript:window.close();">닫기</a>
+						닫기
 					</td>
 					<td width="14" height="23">
 						<img src="../images/ct_btnbg03.gif" width="14" height="23">
