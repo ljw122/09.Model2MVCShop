@@ -10,8 +10,8 @@
 
 <html>
 <head>
-	<title>상품 목록조회</title>
-	
+<!-- 	<title>상품 목록조회</title> -->	
+
 	<link rel="stylesheet" href="../css/admin.css" type="text/css">
 	
 	<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -85,7 +85,8 @@
 				if(event.keyCode == '13'){
 					event.preventDefault();
 					if($('select[name="searchCondition"]').val()==2){
-						if(!$.isNumeric($('input:text[name="searchKeyword"]').val()) || !$.isNumeric($('input:text[name="searchKeyword"]').val())){
+						if( ($('input:text[name="searchKeyword"]') != null && !$.isNumeric($('input:text[name="searchKeyword"]').val()) )
+								|| ( $('input:text[name="searchKeyword2"]') != null && !$.isNumeric($('input:text[name="searchKeyword2"]').val()) ) ){
 							alert('가격 검색은 숫자로만 가능합니다!');
 							$('input:text').val('');
 							return;
@@ -113,6 +114,7 @@
 				self.location = 'getProduct?menu=${menu}&prodNo='+$('input:hidden[name="'+$(this).text().trim()+'"]').val();
 			});
 		});
+		
 		
 	</script>
 
