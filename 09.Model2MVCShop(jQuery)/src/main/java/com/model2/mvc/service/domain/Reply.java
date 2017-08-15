@@ -1,6 +1,7 @@
 package com.model2.mvc.service.domain;
 
 import java.sql.Date;
+import java.util.List;
 
 public class Reply {
 	/*Field*/
@@ -9,6 +10,7 @@ public class Reply {
 	private String cmt;
 	private Date regDate;
 	private Date updDate;
+	private List<Reply> innerReply;
 	
 	/*Constructor*/
 	public Reply(){
@@ -49,6 +51,13 @@ public class Reply {
 	public void setUpdDate(Date updDate) {
 		this.updDate = updDate;
 	}
+	
+	public List<Reply> getInnerReply() {
+		return innerReply;
+	}
+	public void setInnerReply(List<Reply> innerReply) {
+		this.innerReply = innerReply;
+	}
 
 	@Override
 	public String toString() {
@@ -61,7 +70,9 @@ public class Reply {
 		if (regDate != null)
 			builder.append("regDate=").append(regDate).append(", ");
 		if (updDate != null)
-			builder.append("updDate=").append(updDate);
+			builder.append("updDate=").append(updDate).append(", ");
+		if (innerReply != null)
+			builder.append("innerReply=").append(innerReply);
 		builder.append("]");
 		return builder.toString();
 	}

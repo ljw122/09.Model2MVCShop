@@ -52,8 +52,11 @@ public class ProductDaoImpl implements ProductDao{
 	}
 	
 	public List<Reply> getProductCommentList(int prodNo) throws Exception{
-		
-		return sqlSession.selectList("ProductMapper.getProductCommentList", prodNo);
+		List<Reply> replyList = sqlSession.selectList("ProductMapper.getProductCommentList",prodNo);
+		for(Reply reply : replyList){
+			reply.setInnerReply(sqlSession.selectList("ProductMapper.getProductInnerCommentList",reply.getReplyNo()));
+		}
+		return replyList;
 	}
 	
 	public void insertProductComment(Product product) throws Exception{

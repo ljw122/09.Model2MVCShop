@@ -10,13 +10,22 @@
 
 <html>
 <head>
-
-	<link rel="stylesheet" href="../css/admin.css" type="text/css">
-	
 	<title>상품 조회</title>
-
-	<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<link rel="stylesheet" href="../css/admin.css" type="text/css">
+	<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet"
+		href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<link rel="stylesheet" href="/resources/demos/style.css">
+	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	
 	<script type="text/javascript">
+	
+		function fncAddComment(){
+			$('form[name="commentProduct"]').attr('method','post').attr('action','addProductComment').submit();
+		}
+		
 		$(function(){
 
 			$('td.ct_btn01:contains("확인")').bind('click',function(){
@@ -32,16 +41,44 @@
 			});
 			
 			$('td.ct_btn01:contains("등록")').bind('click',function(){
-				$('form[name="commentProduct"]').attr('method','post').attr('action','addProductComment').submit();
+				fncAddComment();
 			});
 			
 			$('input:text[name="cmt"]').bind('keydown',function(event){
 				if(event.keyCode == '13'){
 					event.preventDefault();
-					$('form[name="commentProduct"]').attr('method','post').attr('action','addProductComment').submit();
+					fncAddComment();
 				}
 			});
+			
+			$('div span:contains("답글달기")').bind('click',function(){
+				var index = $(this).find('input:hidden[name="index"]').val();
+				$($('input:hidden[name="replyNo"]')[0]).val($('input:hidden[name="'+index+'"]').val());
+				$('input:text[name="cmt"]').val($('input:text[name="innerCmt'+index+'"]').val());
+				fncAddComment();
+			});
+			
+			$('div div input:text').bind('keydown',function(event){
+				if(event.keyCode == '13'){
+					event.preventDefault();
+					var index = $(this).attr('name');
+					index = index.substr(8);
+					$($('input:hidden[name="replyNo"]')[0]).val($('input:hidden[name="'+index+'"]').val());
+					$('input:text[name="cmt"]').val($('input:text[name="innerCmt'+index+'"]').val());
+					fncAddComment();
+				}
+			});
+			
+			
 		});
+		$(function() {
+			$("#accordion").accordion({
+				collapsible : true,
+				active : false,
+				heightStyle : 'content'
+			});
+		});
+		
 	</script>
 
 </head>
@@ -212,7 +249,69 @@
 </form>
 
 
-	<jsp:include page="../reply/productReply.jsp"/>
+	
+<form name="commentProduct">
+<input type="hidden" name="prodNo" value="${product.prodNo}"/>
+<input type="hidden" name="userId" value="${user.userId }"/>
+<input type="hidden" name="replyNo" value="0"><hr/>
+상품평 보기
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0"	style="margin-top: 13px;">
+	<tr>
+		<th height="1" colspan="3" bgcolor="D6D6D6"></th>
+	</tr>
+	<c:if test="${!empty user }">
+	<tr>
+		<th width="104" class="ct_write">
+			상품평 쓰기
+		</th>
+		<th bgcolor="D6D6D6" width="1"></th>
+		<th class="ct_write01" align="left">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td width="90%">
+						<input type="text" name="cmt" maxlength="100" style="width: 500px"/>
+					</td>
+					<td width="17" height="23">
+						<img src="../images/ct_btnbg01.gif" width="17" height="23"/>
+					</td>
+					<td background="../images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
+						등록
+					</td>
+					<td width="14" height="23">
+						<img src="../images/ct_btnbg03.gif" width="14" height="23">
+					</td>
+				</tr>
+			</table>
+		</th>
+	</tr>
+	<tr>
+		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
+	</tr>
+	</c:if>
+</table>
+<div id="accordion">
+	<c:if test="${replyList.size()>0 }">
+	<c:set var="i" value="0"/>
+		<c:forEach var="reply" items="${ replyList }">
+			<c:set var="i" value="${i+1}"/>
+ 			<h3>${reply.userId}&nbsp;&nbsp;&nbsp;${reply.cmt}</h3>
+			<div>
+				<input type="hidden" name="${i}" value="${reply.replyNo}">
+				<c:forEach var="innerReply" items="${reply.innerReply}">
+					${innerReply.userId}&nbsp;&nbsp;&nbsp;${innerReply.cmt}<br/>
+				</c:forEach>
+				<c:if test="${!empty user }">
+					<input type="text" name="innerCmt${i}">
+					<span>
+						<input type="hidden" name="index" value="${i}">답글달기
+					</span>
+				</c:if>
+			</div>
+ 		</c:forEach>
+	</c:if>
+</div>
+</form>
 
 
 </body>

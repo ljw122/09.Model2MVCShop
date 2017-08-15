@@ -115,13 +115,24 @@
 	
 	<select id="getProductCommentList" parameterType="int" resultMap="replySelectMap">
 		SELECT 
-			r.cmt, r.reg_date , r.upd_date, r.user_id
+			r.cmt, r.reg_date , r.upd_date, r.user_id, r.reply_no
 		FROM 
 			product p, reply r
 		WHERE 
-			p.prod_no=r.prod_no(+) AND p.prod_no=#{value} AND cmt IS NOT NULL
+			p.prod_no=r.prod_no(+) AND p.prod_no=#{value} AND cmt IS NOT NULL AND r.reply_no IN r.outer_reply
 		ORDER BY 
 			r.reply_no
+	</select>
+	
+	<select id="getProductInnerCommentList" parameterType="int" resultMap="replySelectMap">
+		SELECT 
+			cmt, reg_date , upd_date, user_id, reply_no
+		FROM 
+			reply
+		WHERE 
+			cmt IS NOT NULL AND outer_reply IN #{value} AND reply_no NOT IN outer_reply
+		ORDER BY 
+			reply_no
 	</select>
 	
 	<insert id="insertProductComment" parameterType="com.model2.mvc.service.domain.Product">
@@ -131,7 +142,8 @@
 			#{prodNo},
 			#{replyList[0].userId},
 			#{replyList[0].cmt:VARCHAR},
-			0,
+			<if test="replyList[0].replyNo != 0">#{replyList[0].replyNo},</if>
+			<if test="replyList[0].replyNo == 0">seq_reply_reply_no.currval,</if>
 			SYSDATE,
 			NULL	)
 	</insert>

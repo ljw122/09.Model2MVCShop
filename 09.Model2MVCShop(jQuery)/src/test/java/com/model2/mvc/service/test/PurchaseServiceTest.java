@@ -1,4 +1,4 @@
-package com.model2.mvc.service.test.purchase;
+package com.model2.mvc.service.test;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
